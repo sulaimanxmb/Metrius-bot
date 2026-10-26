@@ -4,17 +4,17 @@
     "guildId": "${GUILD_ID}"
   },
   "channels": {
-    "auditLog": "AUDIT_LOG_CHANNEL_ID",
-    "welcomeChannel": "WELCOME_CHANNEL_ID",
-    "goodbyeChannel": "GOODBYE_CHANNEL_ID",
-    "memberCount": "MEMBER_COUNT_CHANNEL_ID"
+    "auditLog": "1563922608691347577",
+    "welcomeChannel": "1563812262786105446",
+    "goodbyeChannel": "1563812262786105446",
+    "memberCount": "1563977271251832963"
   },
   "reactionRoles": {
-    "messageId": "REACTION_ROLE_MESSAGE_ID",
+    "messageId": "REACTION_ROLE_MESSAGE_I",
     "roles": [
       {
         "emoji": "✅",
-        "roleId": "ROLE_ID_HERE",
+        "roleId": "1563847222578258011",
         "roleName": "Verified"
       }
     ]
@@ -24,11 +24,11 @@
     "goodbye": "👋 We're sad to see you go, {{user}}!"
   },
   "memberCount": {
-    "channelId": "MEMBER_COUNT_CHANNEL_ID",
+    "channelId": "1563977271251832963",
     "enabled": true
   },
   "moderation": {
     "enabled": true,
-    "logChannel": "AUDIT_LOG_CHANNEL_ID"
+    "logChannel": "1563922608691347577"
   }
 }

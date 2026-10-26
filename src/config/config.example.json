@@ -1,0 +1,34 @@
+{
+  "bot": {
+    "token": "${DISCORD_TOKEN}",
+    "guildId": "${GUILD_ID}"
+  },
+  "channels": {
+    "auditLog": "YOUR_AUDIT_LOG_CHANNEL_ID",
+    "welcomeChannel": "YOUR_WELCOME_CHANNEL_ID",
+    "goodbyeChannel": "YOUR_GOODBYE_CHANNEL_ID",
+    "memberCount": "YOUR_MEMBER_COUNT_CHANNEL_ID"
+  },
+  "reactionRoles": {
+    "messageId": "YOUR_REACTION_ROLE_MESSAGE_ID",
+    "roles": [
+      {
+        "emoji": "✅",
+        "roleId": "YOUR_ROLE_ID",
+        "roleName": "Verified"
+      }
+    ]
+  },
+  "messages": {
+    "welcome": "👋 Welcome to the server, {{user}}! Please read the rules in #general.",
+    "goodbye": "👋 We're sad to see you go, {{user}}!"
+  },
+  "memberCount": {
+    "channelId": "YOUR_MEMBER_COUNT_CHANNEL_ID",
+    "enabled": true
+  },
+  "moderation": {
+    "enabled": true,
+    "logChannel": "YOUR_AUDIT_LOG_CHANNEL_ID"
+  }
+}

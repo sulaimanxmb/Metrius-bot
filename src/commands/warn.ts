@@ -22,7 +22,7 @@ export const Command: BotCommand = {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.guild) {
-      await interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
+      await interaction.reply({ content: 'This command can only be used in a server.', flags: 64 });
       return;
     }
 
@@ -31,20 +31,27 @@ export const Command: BotCommand = {
     const auditChannelId = (config as any).moderation?.logChannel || (config as any).channels?.auditLog;
 
     if (!auditChannelId || auditChannelId === 'AUDIT_LOG_CHANNEL_ID') {
-      await interaction.reply({ content: 'Audit log channel not configured.', ephemeral: true });
+      await interaction.reply({ content: 'Audit log channel not configured.', flags: 64 });
       return;
     }
 
     try {
+      // Defer reply so we don't timeout while doing async work
+      await interaction.deferReply({ flags: 64 });
+
       const targetMember = await interaction.guild.members.fetch(member!.id);
       const auditChannel = await interaction.guild.channels.fetch(auditChannelId);
 
       if (!targetMember || !auditChannel || !auditChannel.isTextBased()) {
-        await interaction.reply({ content: 'Target member or audit channel not found.', ephemeral: true });
+        await interaction.editReply({ content: 'Target member or audit channel not found.' });
         return;
       }
 
-      await member!.send(`You have been warned in ${interaction.guild.name} for: ${reason}`);
+      try {
+        await member!.send(`You have been warned in ${interaction.guild.name} for: ${reason}`);
+      } catch {
+        log(`Could not DM ${member!.tag} about warning`, LogLevel.WARN);
+      }
 
       const embed = {
         title: '⚠️ Warning Issued',
@@ -56,10 +63,14 @@ export const Command: BotCommand = {
       await (auditChannel as TextChannel).send({ embeds: [embed as any] });
       log(`Warn issued: ${targetMember.user.tag} for ${reason}`, LogLevel.INFO);
 
-      await interaction.reply({ content: `Warned ${targetMember.user.tag}`, ephemeral: true });
+      await interaction.editReply({ content: `Warned ${targetMember.user.tag}` });
     } catch (error) {
       log(`Error issuing warning: ${error}`, LogLevel.ERROR);
-      await interaction.reply({ content: 'Failed to issue warning.', ephemeral: true });
+      if (interaction.replied || interaction.deferred) {
+        await interaction.editReply({ content: 'Failed to issue warning.' });
+      } else {
+        await interaction.reply({ content: 'Failed to issue warning.', flags: 64 });
+      }
     }
   },
 };

@@ -33,10 +33,25 @@ client.once('ready', async () => {
   // Register all commands
   const commands = [pingCmd, warnCmd, timeoutCmd];
   const commandData = commands.map(cmd => cmd.Command.data.toJSON());
+  const guildId = process.env.GUILD_ID;
 
   try {
-    await client.application?.commands.set(commandData);
-    log('Commands registered successfully', LogLevel.INFO);
+    if (guildId) {
+      const guild = await client.guilds.fetch(guildId);
+      await guild.commands.set(commandData);
+      log(`Commands registered for guild: ${guild.name}`, LogLevel.INFO);
+    } else {
+      await client.application?.commands.set(commandData);
+      log('Commands registered globally', LogLevel.INFO);
+    }
+
+    // Store command handlers so interactionCreate can route them
+    commands.forEach(cmd => {
+      client.commands.set(cmd.Command.data.name, {
+        data: cmd.Command.data,
+        execute: cmd.Command.execute,
+      });
+    });
   } catch (error) {
     log(`Error registering commands: ${error}`, LogLevel.ERROR);
   }
@@ -60,10 +75,13 @@ client.on('interactionCreate', async interaction => {
     await command.execute(interaction);
   } catch (error) {
     log(`Error executing ${interaction.commandName}: ${error}`, LogLevel.ERROR);
-    await interaction.reply({
-      content: 'There was an error executing this command!',
-      ephemeral: true,
-    });
+    // Only reply if the command handler didn't already respond
+    if (!interaction.replied && !interaction.deferred) {
+      await interaction.reply({
+        content: 'There was an error executing this command!',
+        flags: 64,
+      });
+    }
   }
 });
 
